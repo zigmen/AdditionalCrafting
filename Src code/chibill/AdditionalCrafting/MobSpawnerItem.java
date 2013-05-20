@@ -12,7 +12,7 @@ import net.minecraft.world.World;
 public class MobSpawnerItem extends Item {
 	String mob;
 	public  MobSpawnerItem(int ID, int Mob ) {
-		super(ID);
+		super(ID + Mob);
 		setMaxStackSize(64);
 		
 		if( Mob == 0) {
@@ -37,6 +37,7 @@ public class MobSpawnerItem extends Item {
 			mob = "Enderman";
 		}
 		setUnlocalizedName(mob);
+		
 	}
 	@Override
 	public boolean onItemUse(ItemStack ItemStack_Spawner, EntityPlayer Player, World the_World, int x, int y, int z, int par7 ,float par8, float par9, float par10)

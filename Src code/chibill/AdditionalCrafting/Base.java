@@ -12,8 +12,10 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockStep;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.EnumToolMaterial;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -40,14 +42,16 @@ public class Base {
 	
 
 	public static final ItemStack NetherStone = new ItemStack(87,1,0);
-
-
-	public int B_Start_ID = 3051;
+	public int Block_Start_ID;
+	public int Item_Start_ID;
+	public int MobSpawner_ID;
+	public int Pick_ID;
+	
 	public int IronStairs;
 	public int GlassStairs;
 	public int GoldStairs;
 	public int LapisStairs;
-	
+	public static Configuration config;
 	
 
 	// The instance of your mod that Forge uses.
@@ -57,18 +61,28 @@ public class Base {
 	// Says where the client and server 'proxy' code is loaded.
 	@SidedProxy(clientSide="chibill.AdditionalCrafting.client.ClientProxy", serverSide="chibill.AdditionalCrafting.CommonProxy")
 	public static CommonProxy proxy;
+	public static Item CreeperSpawner;
 
 	
 
 	@PreInit
 	public void preInit(FMLPreInitializationEvent event) {
 			System.out.println("Starting confifuration of Additional Crafting!");
-	    IronStairs = B_Start_ID;
-	    GlassStairs = B_Start_ID + 1;
-	    GoldStairs = B_Start_ID + 2;
-	    LapisStairs = B_Start_ID + 3;
-	    
-	   
+			Configuration config = new Configuration(event.getSuggestedConfigurationFile());
+				
+		        config.load();
+		        boolean wasRead = true;
+		        Block_Start_ID = config.get(Configuration.CATEGORY_BLOCK,
+		                "Starting ID for all Blocks", 3050).getInt();
+		        Item_Start_ID = config.get(Configuration.CATEGORY_BLOCK,
+		                "Starting ID for all Items", 5000).getInt() - 256;
+		   
+		        if (!wasRead)
+		        {
+		          config.save();
+		        }
+		     
+
 	    System.out.println("Finish reading and prossesing the config for Additional Crafting!");
 	}
 	
@@ -76,7 +90,13 @@ public class Base {
 	public void load(FMLInitializationEvent event) {
 		proxy.registerRenderers();
 		// Stairs
-	
+			MobSpawner_ID = Item_Start_ID;
+			Pick_ID = Item_Start_ID + 10;
+		   IronStairs = Block_Start_ID;
+		    GlassStairs = Block_Start_ID + 1;
+		    GoldStairs = Block_Start_ID + 2;
+		    LapisStairs = Block_Start_ID + 3;
+		    
 		Block IronStair = new NewIronstairs(IronStairs);
 		Block GlassStair = new NewGlassstairs(GlassStairs);
 		Block LapisStair = new NewLapisstairs(LapisStairs);
@@ -99,9 +119,13 @@ public class Base {
 		   GameRegistry.registerBlock(GoldStair,"GoldStairs");
 		 LanguageRegistry.addName(GoldStair, "Gold Stairs");
 		 
-		 final Item CreeperSpawner = new MobSpawnerItem(5001,0).setCreativeTab(CreativeTabs.tabBlock);
+		 Item  Spawner_Pick = (new Custom_PickAxe(Pick_ID, EnumToolMaterial.IRON)).setUnlocalizedName("Pick");
+		 LanguageRegistry.addName(Spawner_Pick, "Pick");
+		 
+		 
+		 CreeperSpawner = new MobSpawnerItem(MobSpawner_ID,0).setCreativeTab(CreativeTabs.tabBlock);
 		 LanguageRegistry.addName(CreeperSpawner, "Creeper Spawner");
-		 final Item SkeletonSpawner = new MobSpawnerItem(5002,1).setCreativeTab(CreativeTabs.tabBlock);
+		 Item SkeletonSpawner = new MobSpawnerItem(MobSpawner_ID,1).setCreativeTab(CreativeTabs.tabBlock);
 		 LanguageRegistry.addName(SkeletonSpawner, "Skeleton Spawner");
 		//Woods
 		//Oak
