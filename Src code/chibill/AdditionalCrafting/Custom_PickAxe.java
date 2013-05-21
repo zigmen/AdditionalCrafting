@@ -5,6 +5,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import chibill.AdditionalCrafting.Base;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
@@ -20,13 +21,18 @@ import net.minecraft.world.World;
 
 public class Custom_PickAxe extends ItemPickaxe { 
 	String mob;
-	
+	String Name;
 	EntityPlayer player2;
 	
-	public Custom_PickAxe(int par1, EnumToolMaterial par2EnumToolMaterial) {
+	public Custom_PickAxe(int par1, EnumToolMaterial par2EnumToolMaterial, String Name ) {
 		super(par1, par2EnumToolMaterial);
 		setCreativeTab(CreativeTabs.tabBlock);
-		
+		this.Name = Name;
+		setUnlocalizedName(Name);
+	}
+	public void registerIcons(IconRegister iconRegister)
+	{
+	         itemIcon = iconRegister.registerIcon("AC:" + Name);
 	}
 	public boolean onBlockStartBreak(ItemStack itemstack, int X, int Y, int Z, EntityPlayer player)
     {
@@ -43,7 +49,7 @@ public class Custom_PickAxe extends ItemPickaxe {
 		
 	public boolean onBlockDestroyed(ItemStack par1ItemStack, World world, int id, int x, int y, int z, EntityLiving par7EntityLiving)
 	{
-		--par1ItemStack.stackSize;
+		par1ItemStack.damageItem(6, par7EntityLiving);
 		if (id == Block.mobSpawner.blockID) {
 			ItemStack itemstack = new ItemStack(Base.CreeperSpawner);
 		 if (itemstack != null)

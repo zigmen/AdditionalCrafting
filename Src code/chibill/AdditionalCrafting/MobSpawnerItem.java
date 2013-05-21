@@ -3,6 +3,7 @@ package chibill.AdditionalCrafting;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -36,7 +37,7 @@ public class MobSpawnerItem extends Item {
 		else if(Mob == 6) {
 			mob = "Enderman";
 		}
-		setUnlocalizedName(mob);
+		setUnlocalizedName(mob + " Spawner");
 		
 	}
 	@Override
@@ -93,6 +94,10 @@ public class MobSpawnerItem extends Item {
             return true;
         }
 	
+	public void registerIcons(IconRegister iconRegister)
+	{
+	         itemIcon = iconRegister.registerIcon("AC:Spawner");
+	}
     @SideOnly(Side.CLIENT)
     public boolean hasEffect(ItemStack par1ItemStack)
     {

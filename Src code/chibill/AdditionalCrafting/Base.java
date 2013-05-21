@@ -62,6 +62,9 @@ public class Base {
 	@SidedProxy(clientSide="chibill.AdditionalCrafting.client.ClientProxy", serverSide="chibill.AdditionalCrafting.CommonProxy")
 	public static CommonProxy proxy;
 	public static Item CreeperSpawner;
+	public static Item SkeletonSpawner;
+	public static Item SpiderSpawner;
+	
 
 	
 
@@ -119,14 +122,19 @@ public class Base {
 		   GameRegistry.registerBlock(GoldStair,"GoldStairs");
 		 LanguageRegistry.addName(GoldStair, "Gold Stairs");
 		 
-		 Item  Spawner_Pick = (new Custom_PickAxe(Pick_ID, EnumToolMaterial.IRON)).setUnlocalizedName("Pick");
-		 LanguageRegistry.addName(Spawner_Pick, "Pick");
-		 
+		 Item  Spawner_Pick = (new Custom_PickAxe(Pick_ID, EnumToolMaterial.WOOD, "Spawner_Pick"));
+		 GameRegistry.registerItem(Spawner_Pick,"Spawner Pick");
+		 LanguageRegistry.addName(Spawner_Pick, "Spawner Collection Pick");
 		 
 		 CreeperSpawner = new MobSpawnerItem(MobSpawner_ID,0).setCreativeTab(CreativeTabs.tabBlock);
-		 LanguageRegistry.addName(CreeperSpawner, "Creeper Spawner");
-		 Item SkeletonSpawner = new MobSpawnerItem(MobSpawner_ID,1).setCreativeTab(CreativeTabs.tabBlock);
-		 LanguageRegistry.addName(SkeletonSpawner, "Skeleton Spawner");
+		 LanguageRegistry.addName(CreeperSpawner,"Creeper Spawner");
+		 
+		 SkeletonSpawner = new MobSpawnerItem(MobSpawner_ID,1).setCreativeTab(CreativeTabs.tabBlock);
+		 LanguageRegistry.addName(SkeletonSpawner,"Skeleton Spawner");
+		 
+		 SpiderSpawner = new MobSpawnerItem(MobSpawner_ID,2).setCreativeTab(CreativeTabs.tabBlock);
+		 LanguageRegistry.addName(SpiderSpawner,"Spider Spawner");
+		 
 		//Woods
 		//Oak
 		 ItemStack OakPlank = new ItemStack(5, 1, 0);	
@@ -254,7 +262,6 @@ public class Base {
 				
 		
 		
-		 ItemStack SpiderSpawner = new ItemStack(52, 1, 52);
 		
 		 ItemStack ZombieSpawner = new ItemStack(52, 1, 54);
 		
@@ -378,7 +385,7 @@ public class Base {
 			GameRegistry.addRecipe(new ItemStack(SkeletonSpawner), "xxx", "xyx","xxx", 
 				'x',Obsidian,'y',SkeletonEgg);
 			//Spider
-			GameRegistry.addRecipe(SpiderSpawner, "xxx", "xyx","xxx", 
+			GameRegistry.addRecipe(new ItemStack(SpiderSpawner), "xxx", "xyx","xxx", 
 				'x',Obsidian,'y',SpiderEgg);
 			//Zombie
 			GameRegistry.addRecipe( ZombieSpawner, "xxx", "xyx","xxx", 
