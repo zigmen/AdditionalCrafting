@@ -1,6 +1,12 @@
 package chibill.AdditionalCrafting;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import chibill.AdditionalCrafting.stairs.*;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
@@ -31,7 +37,7 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 
 
 
-@Mod(modid="AdditionalCrafting", name="Additional Crafting", version="1.0.0")
+@Mod(modid="AdditionalCrafting", name="AdditionalCrafting", version="1.0.0")
 
 
 @NetworkMod(clientSideRequired=true, serverSideRequired=false)
@@ -54,6 +60,8 @@ public class Base {
 	public int DiamondStairs;
 	public int StoneStairs;
 	public int DirtStairs;
+	public static boolean No_Internet;
+	public static boolean Up_to_Date;
 	
 	public static Item CreeperSpawner;
 	public static Item SkeletonSpawner;
@@ -78,7 +86,6 @@ public class Base {
 	@SidedProxy(clientSide="chibill.AdditionalCrafting.client.ClientProxy", serverSide="chibill.AdditionalCrafting.CommonProxy")
 	public static CommonProxy proxy;
 	
-	public static Update_Checker UC = new Update_Checker();
 	@PreInit
 	public void preInit(FMLPreInitializationEvent event) {
 			System.out.println("[AdditionalCrafting] Starting confifuration of Additional Crafting!");
@@ -94,7 +101,7 @@ public class Base {
 		        Check = config.get(Configuration.CATEGORY_GENERAL, "Enables the Update Checker", true).getBoolean(true);
 		        
 		        if(Check){
-		        new Thread(UC,"Update_Checker").start();
+		        Update();
 		        }
 		        if (!wasRead)
 		        {
@@ -485,4 +492,35 @@ public class Base {
 		
 	System.out.println("[AdditionalCrafting] Additional Crafting has finished loading!!");
 	}
+	public static void Update(){
+		  {
+			try {
+		        URL url = new URL("https://raw.github.com/chibill/AdditionalCrafting/master/Version_Control/1.5.txt");
+
+		        BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+
+		        int str = in.read();
+		        int str1 = in.read();
+		        int str2 = in.read();
+		        str1 = in.read();
+		        int str3 = in.read();
+		        if (in != null) {
+		          No_Internet = false;
+		          if ((str == 49) && (str2 == 48) && (str3 == 48)) {
+		           Up_to_Date = true;
+		            System.out.println("[AdditionalCrafting] Additional Crafting up to date!");
+		          }
+		          else {
+		            System.out.println("[AdditionalCrafting] Additional Crafting is out of date for this verison of Minecraft!");
+		          }
+		        }
+		        in.close();
+		      } catch (MalformedURLException e) {
+		      } catch (IOException e) {
+		        No_Internet = true;
+		        System.out.println("[AdditionalCrafting] Additional Crafting has no internet conection!");
+		      }
+		  }
+	}
 }
+	
