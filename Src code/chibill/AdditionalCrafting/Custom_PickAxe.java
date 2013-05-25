@@ -51,7 +51,35 @@ public class Custom_PickAxe extends ItemPickaxe {
 	{
 		par1ItemStack.damageItem(6, par7EntityLiving);
 		if (id == Block.mobSpawner.blockID) {
-			ItemStack itemstack = new ItemStack(Base.CreeperSpawner);
+
+			
+			ItemStack itemstack = null;
+			if( mob == "Creeper") {
+				itemstack = new ItemStack(Base.CreeperSpawner);
+			}
+			else if(mob == "Skeleton") {
+				itemstack = new ItemStack(Base.SkeletonSpawner);
+			}
+			else if(mob == "Spider") {
+				itemstack = new ItemStack(Base.SpiderSpawner);
+			}
+			else if(mob == "Zombie") {
+				itemstack = new ItemStack(Base.ZombieSpawner);
+			}
+			else if(mob == "PigZombie") {
+				itemstack = new ItemStack(Base.PigZombieSpawner);
+			}
+			else if(mob == "Enderman") {
+				itemstack = new ItemStack(Base.EndermanSpawner);
+			}
+			else if(mob == "Blaze") {
+				itemstack = new ItemStack(Base.BlazeSpawner);
+			}else if(mob =="Witch"){
+				itemstack = new ItemStack(Base.WitchSpawner);
+			}else if(mob == "VillagerGolem"){
+				
+				itemstack = new ItemStack(Base.IronGolemSpawner);
+			}
 		 if (itemstack != null)
          {
              dropBlockAsItem_do(world, x, y, z, itemstack);

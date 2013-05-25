@@ -29,13 +29,17 @@ public class MobSpawnerItem extends Item {
 			mob = "Zombie";
 		}
 		else if(Mob == 4) {
-			mob = "Ghast";
-		}
-		else if(Mob == 5) {
 			mob = "PigZombie";
 		}
-		else if(Mob == 6) {
+		else if(Mob == 5) {
 			mob = "Enderman";
+		}
+		else if(Mob == 6) {
+			mob = "Blaze";
+		}else if(Mob == 7){
+			mob ="Witch";
+		}else if(Mob == 8){
+			mob ="VillagerGolem";
 		}
 		setUnlocalizedName(mob + " Spawner");
 		
