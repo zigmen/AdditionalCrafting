@@ -26,7 +26,7 @@ public class Custom_PickAxe extends ItemPickaxe {
 	
 	public Custom_PickAxe(int par1, EnumToolMaterial par2EnumToolMaterial, String Name ) {
 		super(par1, par2EnumToolMaterial);
-		setCreativeTab(CreativeTabs.tabBlock);
+		setCreativeTab(CreativeTabs.tabTools);
 		this.Name = Name;
 		setUnlocalizedName(Name);
 	}

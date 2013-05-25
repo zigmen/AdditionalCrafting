@@ -1,0 +1,3 @@
+developer=https://www.github.com/chibill/AdditionalCrafting/master/Capes_For_Devs/DEV_CAPE.png
+developer=chibill
+developer=himehowareu

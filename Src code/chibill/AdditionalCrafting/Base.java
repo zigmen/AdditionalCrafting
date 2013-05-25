@@ -37,7 +37,7 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 
 
 
-@Mod(modid="AdditionalCrafting", name="AdditionalCrafting", version="1.0.0")
+@Mod(modid="AdditionalCrafting", name="Additional Crafting", version="1.0.0")
 
 
 @NetworkMod(clientSideRequired=true, serverSideRequired=false)
@@ -92,7 +92,7 @@ public class Base {
 			Configuration config = new Configuration(event.getSuggestedConfigurationFile());
 				
 		        config.load();
-		        boolean wasRead = true;
+		      
 		        Block_Start_ID = config.get(Configuration.CATEGORY_BLOCK,
 		                "Starting ID for all Blocks", 3050).getInt();
 		        Item_Start_ID = config.get(Configuration.CATEGORY_BLOCK,
@@ -103,10 +103,8 @@ public class Base {
 		        if(Check){
 		        Update();
 		        }
-		        if (!wasRead)
-		        {
 		          config.save();
-		        }
+		      
 		     
 
 	    System.out.println("[AdditionalCrafting] Finish reading and prossesing the config for Additional Crafting!");
@@ -267,7 +265,7 @@ public class Base {
 		 ItemStack EnderPerl = new ItemStack(368,1,0);
 		 
 		//Fermentedspidereye
-		 ItemStack FermentedeSpiderEye = new ItemStack(341,1,0);
+		 ItemStack FermentedeSpiderEye = new ItemStack(Item.fermentedSpiderEye);
 		 
 		 //BlazeRod
 		 ItemStack BlazeRod = new ItemStack(369,1,0);
