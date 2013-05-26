@@ -88,6 +88,14 @@ public class Base {
 	
 	@PreInit
 	public void preInit(FMLPreInitializationEvent event) {
+		event.getModMetadata().version = "1.0.0"; // Version setting
+		event.getModMetadata().name = "AdditionalCrafting"; // Name setting
+		event.getModMetadata().description = "A Minecraft mod made to add Spawners that are placeable, new stairs, and some new crsfting recipes!"; // Description setting
+		event.getModMetadata().authorList.add("chibill And Himehowareu"); // Adding my name to the mod's author list
+		event.getModMetadata().logoFile = ""; // Setting the logo file location
+		event.getModMetadata().credits = "The Forge Mod team, The people of the Forge Mod Loader Forum."; 
+		
+		
 			System.out.println("[AdditionalCrafting] Starting confifuration of Additional Crafting!");
 			Configuration config = new Configuration(event.getSuggestedConfigurationFile());
 				
