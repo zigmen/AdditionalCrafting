@@ -1,12 +1,17 @@
 package chibill.AdditionalCrafting;
 
-public class CommonProxy {
-	
-	// Client stuff
-	public void registerRenderers() {
-		// Nothing here as the server doesn't render graphics!
-	}
-	public void  capesInit(){
-	
-	}
+public class CommonProxy
+{
+  public void registerRenderers()
+  {
+  }
+
+  public void capesInit()
+  {
+  }
 }
+
+/* Location:           C:\Users\bill\Desktop\Minecraft\My Moding\forge\mcp\src\minecraft\
+ * Qualified Name:     chibill.AdditionalCrafting.CommonProxy
+ * JD-Core Version:    0.6.2
+ */

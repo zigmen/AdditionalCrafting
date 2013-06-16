@@ -1,86 +1,67 @@
-/**
- * Copyright (c) Jadar, 2013
- * Developer Capes API by Jadar
- * License: Lesser GNU Public License v3 (http://www.gnu.org/licenses/lgpl.html)
- * version 1.3.1
+/*    */ package chibill.AdditionalCrafting.developercapesapi;
+/*    */ 
+/*    */ import cpw.mods.fml.common.ITickHandler;
+/*    */ import cpw.mods.fml.common.TickType;
+/*    */ import cpw.mods.fml.relauncher.Side;
+/*    */ import cpw.mods.fml.relauncher.SideOnly;
+/*    */ import java.util.EnumSet;
+/*    */ import java.util.List;
+/*    */ import net.minecraft.client.Minecraft;
+/*    */ import net.minecraft.client.multiplayer.WorldClient;
+/*    */ import net.minecraft.entity.player.EntityPlayer;
+/*    */ 
+/*    */ @SideOnly(Side.CLIENT)
+/*    */ public class DeveloperCapesTickHandler
+/*    */   implements ITickHandler
+/*    */ {
+/* 22 */   private static final Minecraft mc = Minecraft.getMinecraft();
+/* 23 */   private static final DeveloperCapesAPI instance = DeveloperCapesAPI.getInstance();
+/*    */ 
+/*    */   public void tickStart(EnumSet<TickType> type, Object[] tickData)
+/*    */   {
+/* 31 */     if ((mc.theWorld != null) && (mc.theWorld.playerEntities.size() > 0))
+/*    */     {
+/* 35 */       List players = mc.theWorld.playerEntities;
+/*    */ 
+/* 38 */       for (int counter = 0; counter < players.size(); counter++)
+/*    */       {
+/* 41 */         if (players.get(counter) != null)
+/*    */         {
+/* 44 */           EntityPlayer player = (EntityPlayer)players.get(counter);
+/*    */ 
+/* 46 */           if (player.cloakUrl.startsWith("http://skins.minecraft.net/MinecraftCloaks/"))
+/*    */           {
+/* 51 */             String lowerUsername = player.username.toLowerCase();
+/*    */ 
+/* 53 */             if (instance.getUserGroup(lowerUsername) != null)
+/*    */             {
+/* 59 */               String userGroup = instance.getUserGroup(lowerUsername);
+/* 60 */               String groupUrl = instance.getGroupUrl(userGroup);
+/*    */ 
+/* 63 */               player.cloakUrl = groupUrl;
+/*    */             }
+/*    */           }
+/*    */         }
+/*    */       }
+/*    */     }
+/*    */   }
+/*    */ 	
+/*    */   public void tickEnd(EnumSet<TickType> type, Object[] tickData)
+/*    */   {
+/*    */   }
+/*    */ 
+/*    */   public EnumSet<TickType> ticks()
+/*    */   {
+/* 79 */     return EnumSet.of(TickType.CLIENT);
+/*    */   }
+/*    */ 
+/*    */   public String getLabel()
+/*    */   {
+/* 84 */     return "DeveloperCapesTickHandler";
+/*    */   }
+/*    */ }
+
+/* Location:           C:\Users\bill\Desktop\Minecraft\My Moding\forge\mcp\src\minecraft\
+ * Qualified Name:     chibill.AdditionalCrafting.developercapesapi.DeveloperCapesTickHandler
+ * JD-Core Version:    0.6.2
  */
-package chibill.AdditionalCrafting.developercapesapi;
-
-import java.util.EnumSet;
-import java.util.List;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
-import cpw.mods.fml.common.ITickHandler;
-import cpw.mods.fml.common.TickType;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-@SideOnly(Side.CLIENT)
-public class DeveloperCapesTickHandler implements ITickHandler {
-
-    private static final Minecraft mc = Minecraft.getMinecraft();
-    private static final DeveloperCapesAPI instance = DeveloperCapesAPI.getInstance();
-
-    @Override
-    public void tickStart(EnumSet<TickType> type, Object... tickData) {
-        /*
-         * Will not run if there is no world, and if there are player entities
-         * in the playerEntities list.
-         */
-        if ((mc.theWorld != null) && (mc.theWorld.playerEntities.size() > 0)){
-
-            // Grabs a list of all the players, and the world.
-            @SuppressWarnings("unchecked")
-            List<EntityPlayer> players = mc.theWorld.playerEntities;
-
-            // A loop that goes through each player
-            for (int counter = 0; counter < players.size(); counter++){
-
-                // Helps keep from getting an ArrayOutOfBoundException
-                if (players.get(counter) != null){
-
-                    // Gets the player from the players list.
-                    EntityPlayer player = players.get(counter);
-
-                    if (player.cloakUrl.startsWith("http://skins.minecraft.net/MinecraftCloaks/")){
-                        /*
-                         * Lowers the case of the Username, so that there are no
-                         * problems with the Username's case.
-                         */
-                        String lowerUsername = player.username.toLowerCase();
-
-                        if (instance.getUserGroup(lowerUsername) != null){
-
-                            /*
-                             * Gets the user from the hash map and gets the cape
-                             * URL.
-                             */
-                            String userGroup = instance.getUserGroup(lowerUsername);
-                            String groupUrl = instance.getGroupUrl(userGroup);
-
-                            // Sets the cape URL.
-                            player.cloakUrl = groupUrl;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    /*
-     * Not used, stub method.
-     */
-    @Override
-    public void tickEnd(EnumSet<TickType> type, Object... tickData) {}
-
-    @Override
-    public EnumSet<TickType> ticks() {
-        return EnumSet.of(TickType.CLIENT);
-    }
-
-    @Override
-    public String getLabel() {
-        return "DeveloperCapesTickHandler";
-    }
-}

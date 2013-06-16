@@ -1,532 +1,438 @@
-package chibill.AdditionalCrafting;
+/*     */ package chibill.AdditionalCrafting;
+/*     */ 
+/*     */ 
+import chibill.AdditionalCrafting.SpawnerStuff.Custom_PickAxe;
+/*     */ import chibill.AdditionalCrafting.SpawnerStuff.MobSpawnerItem;
+/*     */ import chibill.AdditionalCrafting.networking.PacketHandler;
+/*     */ import chibill.AdditionalCrafting.networking.Server_Loging_Handler;
+/*     */ import chibill.AdditionalCrafting.stairs.NewDiamondStairs;
+/*     */ import chibill.AdditionalCrafting.stairs.NewDirtStairs;
+/*     */ import chibill.AdditionalCrafting.stairs.NewGlassstairs;
+/*     */ import chibill.AdditionalCrafting.stairs.NewGoldstairs;
+/*     */ import chibill.AdditionalCrafting.stairs.NewIronstairs;
+/*     */ import chibill.AdditionalCrafting.stairs.NewLapisstairs;
+/*     */ import chibill.AdditionalCrafting.stairs.NewStonestairs;
+/*     */ import cpw.mods.fml.common.Mod;
+/*     */ import cpw.mods.fml.common.Mod.Init;
+/*     */ import cpw.mods.fml.common.Mod.Instance;
+/*     */ import cpw.mods.fml.common.Mod.PostInit;
+/*     */ import cpw.mods.fml.common.Mod.PreInit;
+/*     */ import cpw.mods.fml.common.SidedProxy;
+/*     */ import cpw.mods.fml.common.event.FMLInitializationEvent;
+/*     */ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+/*     */ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+/*     */ import cpw.mods.fml.common.network.NetworkMod;
+/*     */ import cpw.mods.fml.common.network.NetworkRegistry;
+/*     */ import cpw.mods.fml.common.registry.GameRegistry;
+/*     */ import cpw.mods.fml.common.registry.LanguageRegistry;
+/*     */ import java.io.BufferedReader;
+		  import java.io.File;
+/*     */ import java.io.IOException;
+/*     */ import java.io.InputStreamReader;
+/*     */ import java.io.PrintStream;
+/*     */ import java.net.MalformedURLException;
+/*     */ import java.net.URL;
+/*     */ import net.minecraft.block.Block;
+/*     */ import net.minecraft.creativetab.CreativeTabs;
+/*     */ import net.minecraft.item.EnumToolMaterial;
+/*     */ import net.minecraft.item.Item;
+/*     */ import net.minecraft.item.ItemStack;
+/*     */ import net.minecraft.server.MinecraftServer;
+/*     */ import net.minecraft.server.management.ServerConfigurationManager;
+/*     */ import net.minecraftforge.common.Configuration;
+/*     */ import net.minecraftforge.common.MinecraftForge;
+/*     */ import net.minecraftforge.common.Property;
+/*     */ import net.minecraftforge.event.EventBus;
+/*     */ 
+/*     */ @Mod(modid="AdditionalCrafting", name="Additional Crafting", version="1.0.0")
+/*     */ @NetworkMod(clientSideRequired=true, serverSideRequired=false, channels={"AC_Chibill", "AC_Himehowareu", "AC_Loggin"}, packetHandler=PacketHandler.class)
+/*     */ public class Base
+/*     */ {
+/*  58 */   public static final ItemStack NetherStone = new ItemStack(87, 1, 0);
+/*     */   public int Block_Start_ID;
+/*     */   public int Item_Start_ID;
+/*     */   public int MobSpawner_ID;
+/*     */   public int Pick_ID;
+/*     */   public int IronStairs;
+/*     */   public int GlassStairs;
+/*     */   public int GoldStairs;
+/*     */   public int LapisStairs;
+/*     */   public int DiamondStairs;
+/*     */   public int StoneStairs;
+/*     */   public int DirtStairs;
+/*     */   public static boolean No_Internet;
+/*     */   public static boolean Up_to_Date;
+/*     */   public static Item CreeperSpawner;
+/*     */   public static Item SkeletonSpawner;
+/*     */   public static Item SpiderSpawner;
+/*     */   public static Item ZombieSpawner;
+/*     */   public static Item PigZombieSpawner;
+/*     */   public static Item EndermanSpawner;
+/*     */   public static Item BlazeSpawner;
+/*     */   public static Item WitchSpawner;
+/*     */   public static Item IronGolemSpawner;
+/*     */   public static boolean Check;
+/*     */   public static Configuration config;
+/*     */ 
+/*     */   @Mod.Instance("AdditionalCrafting")
+/*     */   public static Base instance;
+/*     */ 
+/*     */   @SidedProxy(clientSide="chibill.AdditionalCrafting.client.ClientProxy", serverSide="chibill.AdditionalCrafting.CommonProxy")
+/*     */   public static CommonProxy proxy;
+/*     */ 
+/*     */   @Mod.PreInit
+/*     */   public void preInit(FMLPreInitializationEvent event)
+/*     */   {
+/* 104 */
+/*     */ 
+/* 106 */     System.out.println("[AdditionalCrafting] Starting confifuration of Additional Crafting!");
+/* 107 */     Configuration config = new Configuration(event.getSuggestedConfigurationFile());
+/*     */ 
+/* 109 */     config.load();
+/*     */ 
+/* 111 */     this.Block_Start_ID = config.get("block", 
+/* 112 */       "Starting ID for all Blocks", 3050).getInt();
+/* 113 */     this.Item_Start_ID = 
+/* 114 */       (config.get("block", 
+/* 114 */       "Starting ID for all Items", 5000).getInt() - 256);
+/*     */ 
+/* 116 */     Check = config.get("general", "Enables the Update Checker", true).getBoolean(true);
+/*     */ 
+/* 118 */     if (Check) {
+/* 119 */       Update();
+/*     */     }
+/* 121 */     config.save();
+/*     */ 
+/* 125 */     System.out.println("[AdditionalCrafting] Finish reading and prossesing the config for Additional Crafting!");
+/*     */   }
+/*     */ 
+/*     */   @Mod.Init
+/*     */   public void load(FMLInitializationEvent event)
+/*     */   {
+/* 131 */     NetworkRegistry.instance().registerConnectionHandler(new Server_Loging_Handler());
+/*     */ 
+/* 133 */     this.MobSpawner_ID = this.Item_Start_ID;
+/* 134 */     this.Pick_ID = (this.Item_Start_ID + 10);
+/*     */ 
+/* 136 */     this.IronStairs = this.Block_Start_ID;
+/* 137 */     this.GlassStairs = (this.Block_Start_ID + 1);
+/* 138 */     this.GoldStairs = (this.Block_Start_ID + 2);
+/* 139 */     this.LapisStairs = (this.Block_Start_ID + 3);
+/* 140 */     this.DiamondStairs = (this.Block_Start_ID + 4);
+/* 141 */     this.DirtStairs = (this.Block_Start_ID + 5);
+/* 142 */     this.StoneStairs = (this.Block_Start_ID + 6);
+/*     */ 
+/* 144 */     Block DirtStair = new NewDirtStairs(this.DirtStairs);
+/* 145 */     Block DiamondStair = new NewDiamondStairs(this.DiamondStairs);
+/* 146 */     Block StoneStair = new NewStonestairs(this.StoneStairs);
+/* 147 */     Block IronStair = new NewIronstairs(this.IronStairs);
+/* 148 */     Block GlassStair = new NewGlassstairs(this.GlassStairs);
+/* 149 */     Block LapisStair = new NewLapisstairs(this.LapisStairs);
+/* 150 */     Block GoldStair = new NewGoldstairs(this.GoldStairs);
+/*     */ 
+/* 153 */     MinecraftForge.setBlockHarvestLevel(DiamondStair, "pickaxe", 2);
+/* 154 */     GameRegistry.registerBlock(DiamondStair, "DiamondStairs");
+/* 155 */     LanguageRegistry.addName(DiamondStair, "Diamond Stairs");
+/*     */ 
+/* 157 */     MinecraftForge.setBlockHarvestLevel(StoneStair, "pickaxe", 1);
+/* 158 */     GameRegistry.registerBlock(StoneStair, "StoneStairs");
+/* 159 */     LanguageRegistry.addName(StoneStair, "Smooth Stone Stairs");
+/*     */ 
+/* 161 */     GameRegistry.registerBlock(DirtStair, "DirtStairs");
+/* 162 */     LanguageRegistry.addName(DirtStair, "Dirt Stairs");
+/*     */ 
+/* 164 */     MinecraftForge.setBlockHarvestLevel(IronStair, "pickaxe", 2);
+/* 165 */     GameRegistry.registerBlock(IronStair, "IronStairs");
+/* 166 */     LanguageRegistry.addName(IronStair, "Iron Stairs");
+/*     */ 
+/* 169 */     GameRegistry.registerBlock(GlassStair, "GlassStairs");
+/* 170 */     LanguageRegistry.addName(GlassStair, "Glass Stairs");
+/*     */ 
+/* 173 */     MinecraftForge.setBlockHarvestLevel(LapisStair, "pickaxe", 2);
+/* 174 */     GameRegistry.registerBlock(LapisStair, "LapisStairs");
+/* 175 */     LanguageRegistry.addName(LapisStair, "Lapis Stairs");
+/*     */ 
+/* 177 */     MinecraftForge.setBlockHarvestLevel(GoldStair, "pickaxe", 2);
+/* 178 */     GameRegistry.registerBlock(GoldStair, "GoldStairs");
+/* 179 */     LanguageRegistry.addName(GoldStair, "Gold Stairs");
+/*     */ 
+/* 181 */     Item Spawner_Pick = new Custom_PickAxe(this.Pick_ID, EnumToolMaterial.WOOD, "Spawner_Pick");
+/* 182 */     GameRegistry.registerItem(Spawner_Pick, "Spawner Pick");
+/* 183 */     LanguageRegistry.addName(Spawner_Pick, "Spawner Collection Pick");
+/*     */ 
+/* 185 */     CreeperSpawner = new MobSpawnerItem(this.MobSpawner_ID, 0).setCreativeTab(CreativeTabs.tabBlock);
+/* 186 */     LanguageRegistry.addName(CreeperSpawner, "Creeper Spawner");
+/*     */ 
+/* 188 */     SkeletonSpawner = new MobSpawnerItem(this.MobSpawner_ID, 1).setCreativeTab(CreativeTabs.tabBlock);
+/* 189 */     LanguageRegistry.addName(SkeletonSpawner, "Skeleton Spawner");
+/*     */ 
+/* 191 */     SpiderSpawner = new MobSpawnerItem(this.MobSpawner_ID, 2).setCreativeTab(CreativeTabs.tabBlock);
+/* 192 */     LanguageRegistry.addName(SpiderSpawner, "Spider Spawner");
+/*     */ 
+/* 194 */     ZombieSpawner = new MobSpawnerItem(this.MobSpawner_ID, 3).setCreativeTab(CreativeTabs.tabBlock);
+/* 195 */     LanguageRegistry.addName(ZombieSpawner, "Zombie Spawner");
+/*     */ 
+/* 197 */     PigZombieSpawner = new MobSpawnerItem(this.MobSpawner_ID, 4).setCreativeTab(CreativeTabs.tabBlock);
+/* 198 */     LanguageRegistry.addName(PigZombieSpawner, "Zombie Pigman Spawner");
+/*     */ 
+/* 200 */     EndermanSpawner = new MobSpawnerItem(this.MobSpawner_ID, 5).setCreativeTab(CreativeTabs.tabBlock);
+/* 201 */     LanguageRegistry.addName(EndermanSpawner, "Enderman Spawner");
+/*     */ 
+/* 203 */     BlazeSpawner = new MobSpawnerItem(this.MobSpawner_ID, 6).setCreativeTab(CreativeTabs.tabBlock);
+/* 204 */     LanguageRegistry.addName(BlazeSpawner, "Blaze Spawner");
+/*     */ 
+/* 206 */     WitchSpawner = new MobSpawnerItem(this.MobSpawner_ID, 7).setCreativeTab(CreativeTabs.tabBlock);
+/* 207 */     LanguageRegistry.addName(WitchSpawner, "Witch Spawner");
+/*     */ 
+/* 209 */     IronGolemSpawner = new MobSpawnerItem(this.MobSpawner_ID, 8).setCreativeTab(CreativeTabs.tabBlock);
+/* 210 */     LanguageRegistry.addName(IronGolemSpawner, "Iron Golem Spawner");
+/*     */ 
+/* 215 */     ItemStack OakPlank = new ItemStack(5, 1, 0);
+/* 216 */     ItemStack OakSlab = new ItemStack(126, 1, 0);
+/* 217 */     ItemStack Oak = new ItemStack(17, 1, 0);
+/*     */ 
+/* 220 */     ItemStack SprucePlank = new ItemStack(5, 1, 1);
+/* 221 */     ItemStack SpruceSlab = new ItemStack(126, 1, 1);
+/* 222 */     ItemStack Spruce = new ItemStack(17, 1, 1);
+/*     */ 
+/* 225 */     ItemStack BirchPlank = new ItemStack(5, 1, 2);
+/* 226 */     ItemStack BirchSlab = new ItemStack(126, 1, 2);
+/* 227 */     ItemStack Birch = new ItemStack(17, 1, 2);
+/*     */ 
+/* 230 */     ItemStack JunglePlank = new ItemStack(5, 1, 3);
+/* 231 */     ItemStack JungleSlab = new ItemStack(126, 1, 3);
+/* 232 */     ItemStack Jungle = new ItemStack(17, 1, 3);
+/*     */ 
+/* 235 */     ItemStack Stone = new ItemStack(1, 1, 0);
+/* 236 */     ItemStack StoneSlab = new ItemStack(44, 1, 0);
+/*     */ 
+/* 239 */     ItemStack CobbleStone = new ItemStack(4, 1, 0);
+/* 240 */     ItemStack CobbleStoneSlab = new ItemStack(44, 1, 3);
+/*     */ 
+/* 243 */     ItemStack StoneBrick = new ItemStack(98, 1, 0);
+/* 244 */     ItemStack StoneBrickSlab = new ItemStack(44, 1, 5);
+/*     */ 
+/* 247 */     ItemStack SandStone = new ItemStack(24, 1, 0);
+/* 248 */     ItemStack SandStoneSlab = new ItemStack(44, 1, 1);
+/*     */ 
+/* 251 */     ItemStack Brick = new ItemStack(45, 1, 0);
+/* 252 */     ItemStack BrickSlab = new ItemStack(44, 1, 4);
+/*     */ 
+/* 255 */     ItemStack NetherBrick = new ItemStack(43, 1, 6);
+/* 256 */     ItemStack NetherBrickSlabs = new ItemStack(44, 1, 6);
+/*     */ 
+/* 259 */     ItemStack Obsidian = new ItemStack(49, 1, 0);
+/*     */ 
+/* 262 */     ItemStack GunPowder = new ItemStack(289, 1, 0);
+/*     */ 
+/* 265 */     ItemStack Egg = new ItemStack(344, 1, 0);
+/*     */ 
+/* 268 */     ItemStack Bone = new ItemStack(352, 1, 0);
+/*     */ 
+/* 271 */     ItemStack SpiderEye = new ItemStack(375, 1, 0);
+/*     */ 
+/* 274 */     ItemStack RottenFlesh = new ItemStack(367, 1, 0);
+/*     */ 
+/* 277 */     ItemStack GoldNugget = new ItemStack(371, 1, 0);
+/*     */ 
+/* 280 */     ItemStack EnderPerl = new ItemStack(368, 1, 0);
+/*     */ 
+/* 283 */     ItemStack FermentedeSpiderEye = new ItemStack(Item.fermentedSpiderEye);
+/*     */ 
+/* 286 */     ItemStack BlazeRod = new ItemStack(369, 1, 0);
+/*     */ 
+/* 289 */     ItemStack MagmaCream = new ItemStack(376, 1, 0);
+/*     */ 
+/* 292 */     ItemStack SlimeBall = new ItemStack(42, 1, 0);
+/*     */ 
+/* 295 */     ItemStack water = new ItemStack(326, 1, 0);
+/*     */ 
+/* 299 */     ItemStack NetherStone = new ItemStack(87, 1, 0);
+/*     */ 
+/* 302 */     ItemStack Iron = new ItemStack(265, 1, 0);
+/*     */ 
+/* 305 */     ItemStack Glass = new ItemStack(20, 1, 0);
+/*     */ 
+/* 308 */     ItemStack Lapis = new ItemStack(351, 1, 4);
+/*     */ 
+/* 312 */     ItemStack Gold = new ItemStack(266, 1, 0);
+/*     */ 
+/* 315 */     ItemStack CreeperEgg = new ItemStack(383, 1, 50);
+/*     */ 
+/* 317 */     ItemStack SkeletonEgg = new ItemStack(383, 1, 51);
+/*     */ 
+/* 319 */     ItemStack SpiderEgg = new ItemStack(383, 1, 52);
+/*     */ 
+/* 321 */     ItemStack ZombieEgg = new ItemStack(383, 1, 54);
+/*     */ 
+/* 323 */     ItemStack ZombiePigManEgg = new ItemStack(383, 1, 57);
+/*     */ 
+/* 325 */     ItemStack EnderMenEgg = new ItemStack(383, 1, 58);
+/*     */ 
+/* 327 */     ItemStack WitchEgg = new ItemStack(383, 1, 66);
+/*     */ 
+/* 329 */     ItemStack BlazeEgg = new ItemStack(383, 1, 61);
+/*     */ 
+/* 331 */     ItemStack IronGolemEgg = new ItemStack(383, 1, 99);
+/*     */ 
+/* 346 */     GameRegistry.addRecipe(NetherBrick, new Object[] { "x ", "x ", 
+/* 347 */       Character.valueOf('x'), NetherBrickSlabs });
+/*     */ 
+/* 350 */     GameRegistry.addRecipe(OakPlank, new Object[] { "x ", "x ", 
+/* 351 */       Character.valueOf('x'), OakSlab });
+/*     */ 
+/* 354 */     GameRegistry.addRecipe(Oak, new Object[] { "x x", "x x", 
+/* 355 */       Character.valueOf('x'), OakPlank });
+/*     */ 
+/* 358 */     GameRegistry.addRecipe(SprucePlank, new Object[] { "x ", "x ", 
+/* 359 */       Character.valueOf('x'), SpruceSlab });
+/*     */ 
+/* 362 */     GameRegistry.addRecipe(Spruce, new Object[] { "x x", "x x", 
+/* 363 */       Character.valueOf('x'), SprucePlank });
+/*     */ 
+/* 366 */     GameRegistry.addRecipe(BirchPlank, new Object[] { "x ", "x ", 
+/* 367 */       Character.valueOf('x'), BirchSlab });
+/*     */ 
+/* 370 */     GameRegistry.addRecipe(Birch, new Object[] { "x x", "x x", 
+/* 371 */       Character.valueOf('x'), BirchPlank });
+/*     */ 
+/* 374 */     GameRegistry.addRecipe(JunglePlank, new Object[] { "x ", "x ", 
+/* 375 */       Character.valueOf('x'), JungleSlab });
+/*     */ 
+/* 378 */     GameRegistry.addRecipe(Jungle, new Object[] { "x x", "x x", 
+/* 379 */       Character.valueOf('x'), JunglePlank });
+/*     */ 
+/* 382 */     GameRegistry.addRecipe(Stone, new Object[] { "x ", "x ", 
+/* 383 */       Character.valueOf('x'), StoneSlab });
+/*     */ 
+/* 386 */     GameRegistry.addRecipe(StoneBrick, new Object[] { "x ", "x ", 
+/* 387 */       Character.valueOf('x'), StoneBrickSlab });
+/*     */ 
+/* 390 */     GameRegistry.addRecipe(Brick, new Object[] { "x ", "x ", 
+/* 391 */       Character.valueOf('x'), BrickSlab });
+/*     */ 
+/* 394 */     GameRegistry.addRecipe(CobbleStone, new Object[] { "x ", "x ", 
+/* 395 */       Character.valueOf('x'), CobbleStoneSlab });
+/*     */ 
+/* 399 */     GameRegistry.registerFuelHandler(new FuelHandler());
+/*     */ 
+/* 405 */     GameRegistry.addRecipe(CreeperEgg, new Object[] { "xxx", "yzy", "xxx", 
+/* 406 */       Character.valueOf('x'), Obsidian, Character.valueOf('y'), GunPowder, Character.valueOf('z'), Egg });
+/*     */ 
+/* 408 */     GameRegistry.addRecipe(SkeletonEgg, new Object[] { "xxx", "yzy", "xxx", 
+/* 409 */       Character.valueOf('x'), Obsidian, Character.valueOf('y'), Bone, Character.valueOf('z'), Egg });
+/*     */ 
+/* 411 */     GameRegistry.addRecipe(SpiderEgg, new Object[] { "xxx", "yzy", "xxx", 
+/* 412 */       Character.valueOf('x'), Obsidian, Character.valueOf('y'), SpiderEye, Character.valueOf('z'), Egg });
+/*     */ 
+/* 414 */     GameRegistry.addRecipe(ZombieEgg, new Object[] { "xxx", "yzy", "xxx", 
+/* 415 */       Character.valueOf('x'), Obsidian, Character.valueOf('y'), RottenFlesh, Character.valueOf('z'), Egg });
+/*     */ 
+/* 417 */     GameRegistry.addRecipe(ZombiePigManEgg, new Object[] { "xxx", "yzy", "xxx", 
+/* 418 */       Character.valueOf('x'), Obsidian, Character.valueOf('y'), GoldNugget, Character.valueOf('z'), Egg });
+/*     */ 
+/* 420 */     GameRegistry.addRecipe(EnderMenEgg, new Object[] { "xxx", "yzy", "xxx", 
+/* 421 */       Character.valueOf('x'), Obsidian, Character.valueOf('y'), EnderPerl, Character.valueOf('z'), Egg });
+/*     */ 
+/* 424 */     GameRegistry.addRecipe(WitchEgg, new Object[] { "xxx", "yzy", "xxx", 
+/* 425 */       Character.valueOf('x'), Obsidian, Character.valueOf('y'), FermentedeSpiderEye, Character.valueOf('z'), Egg });
+/*     */ 
+/* 428 */     GameRegistry.addRecipe(BlazeEgg, new Object[] { "xxx", "yzy", "xxx", 
+/* 429 */       Character.valueOf('x'), Obsidian, Character.valueOf('y'), BlazeRod, Character.valueOf('z'), Egg });
+/*     */ 
+/* 433 */     GameRegistry.addRecipe(IronGolemEgg, new Object[] { "xxx", "yzy", "xxx", 
+/* 434 */       Character.valueOf('x'), Obsidian, Character.valueOf('y'), Iron, Character.valueOf('z'), Egg });
+/*     */ 
+/* 439 */     GameRegistry.addRecipe(new ItemStack(CreeperSpawner), new Object[] { "xxx", "xyx", "xxx", 
+/* 440 */       Character.valueOf('x'), Obsidian, Character.valueOf('y'), CreeperEgg });
+/*     */ 
+/* 442 */     GameRegistry.addRecipe(new ItemStack(SkeletonSpawner), new Object[] { "xxx", "xyx", "xxx", 
+/* 443 */       Character.valueOf('x'), Obsidian, Character.valueOf('y'), SkeletonEgg });
+/*     */ 
+/* 445 */     GameRegistry.addRecipe(new ItemStack(SpiderSpawner), new Object[] { "xxx", "xyx", "xxx", 
+/* 446 */       Character.valueOf('x'), Obsidian, Character.valueOf('y'), SpiderEgg });
+/*     */ 
+/* 448 */     GameRegistry.addRecipe(new ItemStack(ZombieSpawner), new Object[] { "xxx", "xyx", "xxx", 
+/* 449 */       Character.valueOf('x'), Obsidian, Character.valueOf('y'), ZombieEgg });
+/*     */ 
+/* 451 */     GameRegistry.addRecipe(new ItemStack(PigZombieSpawner), new Object[] { "xxx", "xyx", "xxx", 
+/* 452 */       Character.valueOf('x'), Obsidian, Character.valueOf('y'), ZombiePigManEgg });
+/*     */ 
+/* 454 */     GameRegistry.addRecipe(new ItemStack(EndermanSpawner), new Object[] { "xxx", "xyx", "xxx", 
+/* 455 */       Character.valueOf('x'), Obsidian, Character.valueOf('y'), EnderMenEgg });
+/*     */ 
+/* 458 */     GameRegistry.addRecipe(new ItemStack(BlazeSpawner), new Object[] { "xxx", "xyx", "xxx", 
+/* 459 */       Character.valueOf('x'), Obsidian, Character.valueOf('y'), BlazeEgg });
+/*     */ 
+/* 462 */     GameRegistry.addRecipe(new ItemStack(WitchSpawner), new Object[] { "xxx", "xyx", "xxx", 
+/* 463 */       Character.valueOf('x'), Obsidian, Character.valueOf('y'), WitchEgg });
+/* 464 */     GameRegistry.addRecipe(new ItemStack(IronGolemSpawner), new Object[] { "xxx", "xyx", "xxx", 
+/* 465 */       Character.valueOf('x'), Obsidian, Character.valueOf('y'), IronGolemEgg });
+/*     */ 
+/* 469 */     GameRegistry.addRecipe(new ItemStack(IronStair, 4), new Object[] { "  x", " xx", "xxx", 
+/* 470 */       Character.valueOf('x'), Iron });
+/*     */ 
+/* 473 */     GameRegistry.addRecipe(new ItemStack(GlassStair, 4), new Object[] { "  x", " xx", "xxx", 
+/* 474 */       Character.valueOf('x'), Glass });
+/*     */ 
+/* 477 */     GameRegistry.addRecipe(new ItemStack(LapisStair, 4), new Object[] { "  x", " xx", "xxx", 
+/* 478 */       Character.valueOf('x'), Lapis });
+/*     */ 
+/* 481 */     GameRegistry.addRecipe(new ItemStack(GoldStair, 4), new Object[] { "  x", " xx", "xxx", 
+/* 482 */       Character.valueOf('x'), Gold });
+/*     */ 
+/* 485 */     GameRegistry.addRecipe(new ItemStack(DirtStair, 4), new Object[] { "  x", " xx", "xxx", 
+/* 486 */       Character.valueOf('x'), new ItemStack(3, 1, 0) });
+/*     */ 
+/* 489 */     GameRegistry.addRecipe(new ItemStack(StoneStair, 4), new Object[] { "  x", " xx", "xxx", 
+/* 490 */       Character.valueOf('x'), Stone });
+/*     */ 
+/* 493 */     GameRegistry.addRecipe(new ItemStack(DiamondStair, 4), new Object[] { "  x", " xx", "xxx", 
+/* 494 */       Character.valueOf('x'), new ItemStack(Item.diamond) });
+/*     */ 
+/* 496 */     GameRegistry.addRecipe(new ItemStack(Spawner_Pick), new Object[] { "xyx", " z ", " z ", 
+/* 497 */       Character.valueOf('x'), new ItemStack(Item.rottenFlesh), Character.valueOf('y'), Iron, Character.valueOf('z'), new ItemStack(Item.stick) });
+/*     */   }
+/*     */ 
+/*     */   @Mod.PostInit
+/*     */   public void postInit(FMLPostInitializationEvent event)
+/*     */   {
+/* 504 */ 
+/*     */ 
+/* 508 */     System.out.println("[AdditionalCrafting] Additional Crafting has finished loading!!");
+/*     */   }
+/*     */ 
+/*     */   public static void Update()
+/*     */   {
+/*     */     try {
+/* 514 */       URL url = new URL("https://raw.github.com/chibill/AdditionalCrafting/master/Version_Control/1.5.txt");
+/*     */ 
+/* 516 */       BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+/*     */ 
+/* 518 */       String str = in.readLine();
+/* 523 */       if (in != null) {
+/* 524 */         No_Internet = false;
+/* 525 */         if (str.equals("1.0.0")) {
+/* 526 */           Up_to_Date = true;
+/* 527 */           System.out.println("[AdditionalCrafting] Additional Crafting up to date!");
+/*     */         }
+/*     */         else {
+					Up_to_Date = false;
+/* 530 */           System.out.println("[AdditionalCrafting] Additional Crafting is out of date for this verison of Minecraft!");
+/*     */         }
+/*     */       }
+/* 533 */       in.close();
+/*     */     } catch (MalformedURLException localMalformedURLException) {
+/*     */     } catch (IOException e) {
+/* 536 */       No_Internet = true;
+/* 537 */       System.out.println("[AdditionalCrafting] Additional Crafting has no internet conection!");
+/*     */     }
+/*     */   }
+/*     */ 
+/*     */  
+/*     */ }
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import chibill.AdditionalCrafting.stairs.*;
-import net.minecraftforge.common.Configuration;
-import net.minecraftforge.common.Property;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockStep;
-import net.minecraft.block.material.Material;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.EnumToolMaterial;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemPickaxe;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.MinecraftForge;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.Init;
-import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.Mod.PostInit;
-import cpw.mods.fml.common.Mod.PreInit;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.network.NetworkMod;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.LanguageRegistry;
-
-
-
-@Mod(modid="AdditionalCrafting", name="Additional Crafting", version="1.0.0")
-
-
-@NetworkMod(clientSideRequired=true, serverSideRequired=false)
-public class Base {
-	
-
-	public static final ItemStack NetherStone = new ItemStack(87,1,0);
-	public int Block_Start_ID;
-	
-	public int Item_Start_ID;
-	
-	public int MobSpawner_ID;
-	
-	public int Pick_ID;
-	
-	public int IronStairs;
-	public int GlassStairs;
-	public int GoldStairs;
-	public int LapisStairs;
-	public int DiamondStairs;
-	public int StoneStairs;
-	public int DirtStairs;
-	public static boolean No_Internet;
-	public static boolean Up_to_Date;
-	
-	public static Item CreeperSpawner;
-	public static Item SkeletonSpawner;
-	public static Item SpiderSpawner;
-	public static Item ZombieSpawner;
-	public static Item PigZombieSpawner;
-	public static Item EndermanSpawner;
-	public static Item BlazeSpawner;
-	public static Item WitchSpawner;
-	public static Item IronGolemSpawner;
-	
-	public static boolean Check; 
-	
-	public static Configuration config;
-	
-
-	// The instance of your mod that Forge uses.
-	@Instance("AdditionalCrafting")
-	public static Base instance;
-	
-	// Says where the client and server 'proxy' code is loaded.
-	@SidedProxy(clientSide="chibill.AdditionalCrafting.client.ClientProxy", serverSide="chibill.AdditionalCrafting.CommonProxy")
-	public static CommonProxy proxy;
-	
-	@PreInit
-	public void preInit(FMLPreInitializationEvent event) {
-		event.getModMetadata().version = "1.0.0"; // Version setting
-		event.getModMetadata().name = "AdditionalCrafting"; // Name setting
-		event.getModMetadata().description = "A Minecraft mod made to add Spawners that are placeable, new stairs, and some new crsfting recipes!"; // Description setting
-		event.getModMetadata().authorList.add("chibill And Himehowareu"); // Adding my name to the mod's author list
-		event.getModMetadata().logoFile = ""; // Setting the logo file location
-		event.getModMetadata().credits = "The Forge Mod team, The people of the Forge Mod Loader Forum."; 
-		
-		
-			System.out.println("[AdditionalCrafting] Starting confifuration of Additional Crafting!");
-			Configuration config = new Configuration(event.getSuggestedConfigurationFile());
-				
-		        config.load();
-		      
-		        Block_Start_ID = config.get(Configuration.CATEGORY_BLOCK,
-		                "Starting ID for all Blocks", 3050).getInt();
-		        Item_Start_ID = config.get(Configuration.CATEGORY_BLOCK,
-		                "Starting ID for all Items", 5000).getInt() - 256;
-		       
-		        Check = config.get(Configuration.CATEGORY_GENERAL, "Enables the Update Checker", true).getBoolean(true);
-		        
-		        if(Check){
-		        Update();
-		        }
-		          config.save();
-		      
-		     
-
-	    System.out.println("[AdditionalCrafting] Finish reading and prossesing the config for Additional Crafting!");
-	}
-	
-	@Init
-	public void load(FMLInitializationEvent event) {
-		proxy.registerRenderers();
-		NetworkRegistry.instance().registerConnectionHandler(new ChatHandler());
-		// Stairs
-			MobSpawner_ID = Item_Start_ID;
-			Pick_ID = Item_Start_ID + 10;
-			
-		   IronStairs = Block_Start_ID;
-		    GlassStairs = Block_Start_ID + 1;
-		    GoldStairs = Block_Start_ID + 2;
-		    LapisStairs = Block_Start_ID + 3;
-		    DiamondStairs = Block_Start_ID + 4;
-		    DirtStairs = Block_Start_ID + 5;
-		    StoneStairs = Block_Start_ID + 6;
-		
-		Block DirtStair = new NewDirtStairs(DirtStairs);
-		Block DiamondStair = new NewDiamondStairs(DiamondStairs);
-		Block StoneStair = new NewStonestairs(StoneStairs);
-		Block IronStair = new NewIronstairs(IronStairs);
-		Block GlassStair = new NewGlassstairs(GlassStairs);
-		Block LapisStair = new NewLapisstairs(LapisStairs);
-		Block GoldStair = new NewGoldstairs(GoldStairs);
-		
-		
-		MinecraftForge.setBlockHarvestLevel(DiamondStair, "pickaxe", 2);
-		GameRegistry.registerBlock(DiamondStair,"DiamondStairs");
-		LanguageRegistry.addName(DiamondStair, "Diamond Stairs");
-		
-		MinecraftForge.setBlockHarvestLevel(StoneStair, "pickaxe", 1);
-		GameRegistry.registerBlock(StoneStair,"StoneStairs");
-		LanguageRegistry.addName(StoneStair, "Smooth Stone Stairs");
-		
-		GameRegistry.registerBlock(DirtStair,"DirtStairs");
-		LanguageRegistry.addName(DirtStair, "Dirt Stairs");
-		
-		MinecraftForge.setBlockHarvestLevel(IronStair, "pickaxe", 2);
-		GameRegistry.registerBlock(IronStair,"IronStairs");
-		LanguageRegistry.addName(IronStair, "Iron Stairs");
-		   
-		   
-		GameRegistry.registerBlock(GlassStair,"GlassStairs");
-		LanguageRegistry.addName(GlassStair, "Glass Stairs");
-	
-		   
-		MinecraftForge.setBlockHarvestLevel(LapisStair, "pickaxe", 2);
-		GameRegistry.registerBlock(LapisStair,"LapisStairs");
-		LanguageRegistry.addName(LapisStair, "Lapis Stairs");
-		  
-		MinecraftForge.setBlockHarvestLevel(GoldStair, "pickaxe", 2);
-		GameRegistry.registerBlock(GoldStair,"GoldStairs");
-		LanguageRegistry.addName(GoldStair, "Gold Stairs");
-		 
-		Item  Spawner_Pick = (new Custom_PickAxe(Pick_ID, EnumToolMaterial.WOOD, "Spawner_Pick"));
-		GameRegistry.registerItem(Spawner_Pick,"Spawner Pick");
-		LanguageRegistry.addName(Spawner_Pick, "Spawner Collection Pick");
-		 //New Spawners
-		 CreeperSpawner = new MobSpawnerItem(MobSpawner_ID,0).setCreativeTab(CreativeTabs.tabBlock);
-		 LanguageRegistry.addName(CreeperSpawner,"Creeper Spawner");
-		 
-		 SkeletonSpawner = new MobSpawnerItem(MobSpawner_ID,1).setCreativeTab(CreativeTabs.tabBlock);
-		 LanguageRegistry.addName(SkeletonSpawner,"Skeleton Spawner");
-		 
-		 SpiderSpawner = new MobSpawnerItem(MobSpawner_ID,2).setCreativeTab(CreativeTabs.tabBlock);
-		 LanguageRegistry.addName(SpiderSpawner,"Spider Spawner");
-		 
-		 ZombieSpawner = new MobSpawnerItem(MobSpawner_ID,3).setCreativeTab(CreativeTabs.tabBlock);
-		 LanguageRegistry.addName(ZombieSpawner,"Zombie Spawner");
-		 
-		 PigZombieSpawner = new MobSpawnerItem(MobSpawner_ID,4).setCreativeTab(CreativeTabs.tabBlock);
-		 LanguageRegistry.addName(PigZombieSpawner,"Zombie Pigman Spawner");
-		 
-		 EndermanSpawner = new MobSpawnerItem(MobSpawner_ID,5).setCreativeTab(CreativeTabs.tabBlock);
-		 LanguageRegistry.addName(EndermanSpawner,"Enderman Spawner");
-		
-		 BlazeSpawner = new MobSpawnerItem(MobSpawner_ID,6).setCreativeTab(CreativeTabs.tabBlock);
-		 LanguageRegistry.addName(BlazeSpawner,"Blaze Spawner");
-		 
-		 WitchSpawner = new MobSpawnerItem(MobSpawner_ID,7).setCreativeTab(CreativeTabs.tabBlock);
-		 LanguageRegistry.addName(WitchSpawner,"Witch Spawner");
-		 
-		 IronGolemSpawner = new MobSpawnerItem(MobSpawner_ID,8).setCreativeTab(CreativeTabs.tabBlock);
-		 LanguageRegistry.addName(IronGolemSpawner,"Iron Golem Spawner");
-		 
-		 
-		 //Woods
-		//Oak
-		 ItemStack OakPlank = new ItemStack(5, 1, 0);	
-		 ItemStack OakSlab = new ItemStack(126, 1, 0);
-		 ItemStack Oak = new ItemStack(17, 1, 0);
-		
-		//Spruce
-		 ItemStack SprucePlank = new ItemStack(5, 1, 1);	
-		 ItemStack SpruceSlab = new ItemStack(126, 1, 1);
-		 ItemStack Spruce = new ItemStack(17, 1, 1);
-		
-		//Birch
-		 ItemStack BirchPlank = new ItemStack(5, 1, 2);	
-		 ItemStack BirchSlab = new ItemStack(126, 1, 2);	
-		 ItemStack Birch = new ItemStack(17, 1, 2);
-		
-		//Jungle
-		 ItemStack JunglePlank = new ItemStack(5, 1, 3);	
-		 ItemStack JungleSlab = new ItemStack(126, 1, 3);	
-		 ItemStack Jungle = new ItemStack(17, 1, 3);
-		
-		//Stone
-		 ItemStack Stone = new ItemStack(1, 1, 0);	
-		 ItemStack StoneSlab = new ItemStack(44, 1, 0);
-		
-		//Cobble
-		 ItemStack CobbleStone = new ItemStack(4, 1, 0);	
-		 ItemStack CobbleStoneSlab = new ItemStack(44, 1, 3);
-		
-		//StoneBrick
-		 ItemStack StoneBrick = new ItemStack(98, 1, 0);	
-		 ItemStack StoneBrickSlab = new ItemStack(44, 1, 5);
-		
-		//SandStone
-		 ItemStack SandStone= new ItemStack(24, 1, 0);	
-		 ItemStack SandStoneSlab = new ItemStack(44, 1, 1);
-		
-		//Bricks
-		 ItemStack Brick = new ItemStack(45, 1, 0);	
-		 ItemStack BrickSlab = new ItemStack(44, 1, 4);
-		 
-		//NetherBrick
-		 ItemStack NetherBrick = new ItemStack(43, 1, 6);	
-		 ItemStack NetherBrickSlabs = new ItemStack(44, 1, 6);
-		
-		//Obsidian
-		 ItemStack Obsidian = new ItemStack(49,1,0);
-		
-		//GunPowder
-		 ItemStack GunPowder = new ItemStack(289,1,0);
-		
-		//Egg
-		 ItemStack Egg = new ItemStack(344,1,0);
-		
-		//Bone
-		 ItemStack Bone = new ItemStack(352,1,0);
-		
-		//spidereye
-		 ItemStack SpiderEye = new ItemStack(375,1,0);
-		
-		//RottenFlesh
-		 ItemStack RottenFlesh = new ItemStack(367,1,0);
-		 
-		 //GlodTooth
-		 ItemStack GoldNugget = new ItemStack(371,1,0);
-		 
-		 //EnderPerl
-		 ItemStack EnderPerl = new ItemStack(368,1,0);
-		 
-		//Fermentedspidereye
-		 ItemStack FermentedeSpiderEye = new ItemStack(Item.fermentedSpiderEye);
-		 
-		 //BlazeRod
-		 ItemStack BlazeRod = new ItemStack(369,1,0);
-		 
-		 //Magmacream
-		 ItemStack MagmaCream = new ItemStack(376,1,0);
-
-		 //SlimeBall
-		 ItemStack SlimeBall = new ItemStack(42,1,0);
-		 
-		//Water
-		 ItemStack water = new ItemStack(326,1,0);
-		 
-		 
-		 //NetherStone
-		 ItemStack NetherStone = new ItemStack(87,1,0);
-		 
-		//Iron
-		 ItemStack Iron = new ItemStack(265,1,0);
-		 
-		//Glass
-		 ItemStack Glass = new ItemStack(20,1,0);
-		 
-		//Lapis
-		 ItemStack Lapis = new ItemStack(351,1,4);
-		 
-		 
-		//Gold
-		 ItemStack Gold = new ItemStack(266,1,0);
-		  
-		//SpawnEggs
-		 ItemStack CreeperEgg = new ItemStack(383, 1, 50);	
-		
-		 ItemStack SkeletonEgg = new ItemStack(383, 1, 51);
-		
-		 ItemStack SpiderEgg = new ItemStack(383, 1, 52);
-		
-		 ItemStack ZombieEgg = new ItemStack(383, 1, 54);
-		
-		 ItemStack ZombiePigManEgg = new ItemStack(383, 1, 57);
-		
-		 ItemStack EnderMenEgg = new ItemStack(383, 1, 58);
-		
-		 ItemStack WitchEgg = new ItemStack(383, 1, 66);
-		
-		 ItemStack BlazeEgg = new ItemStack(383, 1, 61);
-		
-		 ItemStack IronGolemEgg = new ItemStack(383, 1, 99);
-			
-	
-		 
-				 
-				
-		
-		
-		
-		 
-		 
-		//Crafting
-		 
-
-		//Oak slab to plank
-		GameRegistry.addRecipe(NetherBrick, "x ", "x ", 
-			        'x', NetherBrickSlabs);
-		
-		//Oak slab to plank
-		GameRegistry.addRecipe(OakPlank, "x ", "x ", 
-		        'x', OakSlab);
-		
-		//Oak Plank to Oak
-		GameRegistry.addRecipe(Oak, "x x", "x x", 
-		        'x',OakPlank);
-		
-		//Spruce slab to plank
-		GameRegistry.addRecipe(SprucePlank, "x ", "x ", 
-		       'x', SpruceSlab);
-		
-		//Spruce Plank to Spruce
-		GameRegistry.addRecipe(Spruce, "x x", "x x", 
-		        'x',SprucePlank);
-		
-		//Birch slab to plank
-		GameRegistry.addRecipe(BirchPlank, "x ", "x ", 
-				'x', BirchSlab);
-		
-		//Birch Plank to Birch
-		GameRegistry.addRecipe(Birch, "x x", "x x", 
-		        'x',BirchPlank);
-		
-		//Jungle slab to plank
-		GameRegistry.addRecipe(JunglePlank, "x ", "x ", 
-		       'x', JungleSlab);
-		
-		//Jungle Plank to Jungle
-		GameRegistry.addRecipe(Jungle, "x x", "x x", 
-				'x',JunglePlank);
-		
-		//Stone slab to Stone
-		GameRegistry.addRecipe(Stone, "x ", "x ",
-				'x', StoneSlab);
-	
-		//StoneBrick slab to StoneBrick
-		GameRegistry.addRecipe(StoneBrick, "x ", "x ", 
-		       'x', StoneBrickSlab);
-		
-		//Brick slab to Brick
-		GameRegistry.addRecipe(Brick, "x ", "x ", 
-		       'x', BrickSlab);
-		
-		//CobbleStoneSlab to  CobbleStone
-		GameRegistry.addRecipe(CobbleStone, "x ", "x ", 
-			'x',CobbleStoneSlab);
-		
-		
-		//Burn able
-		GameRegistry.registerFuelHandler(new FuelHandler());
-
-		
-		//SpawnEggs
-		
-			//Creeper
-			GameRegistry.addRecipe(CreeperEgg, "xxx", "yzy","xxx", 
-				'x',Obsidian,'y',GunPowder,'z',Egg);
-			//Skeleton
-			GameRegistry.addRecipe(SkeletonEgg, "xxx", "yzy","xxx", 
-				'x',Obsidian,'y',Bone,'z',Egg);
-			//Spider
-			GameRegistry.addRecipe(SpiderEgg, "xxx", "yzy","xxx", 
-				'x',Obsidian,'y',SpiderEye,'z',Egg);
-			//Zombie
-			GameRegistry.addRecipe( ZombieEgg, "xxx", "yzy","xxx", 
-				'x',Obsidian,'y',RottenFlesh,'z',Egg);
-			//Zombie Pig man
-			GameRegistry.addRecipe( ZombiePigManEgg, "xxx", "yzy","xxx", 
-					'x',Obsidian,'y',GoldNugget,'z',Egg);
-			//EnderMan
-			GameRegistry.addRecipe( EnderMenEgg , "xxx", "yzy","xxx", 
-					'x',Obsidian,'y',EnderPerl,'z',Egg);
-			
-			//CaveSpider
-			GameRegistry.addRecipe(WitchEgg , "xxx", "yzy","xxx", 
-					'x',Obsidian,'y',FermentedeSpiderEye,'z',Egg);
-			
-			//Blaze
-			GameRegistry.addRecipe(BlazeEgg , "xxx", "yzy","xxx", 
-					'x',Obsidian,'y',BlazeRod,'z',Egg);
-			
-			
-			//Slime
-			GameRegistry.addRecipe(IronGolemEgg , "xxx", "yzy","xxx", 
-					'x',Obsidian,'y',Iron,'z',Egg);
-		
-			//Spawners
-			
-			//Creeper
-			GameRegistry.addRecipe(new ItemStack(CreeperSpawner), "xxx", "xyx","xxx", 
-				'x',Obsidian,'y',CreeperEgg);
-			//Skeleton
-			GameRegistry.addRecipe(new ItemStack(SkeletonSpawner), "xxx", "xyx","xxx", 
-				'x',Obsidian,'y',SkeletonEgg);
-			//Spider
-			GameRegistry.addRecipe(new ItemStack(SpiderSpawner), "xxx", "xyx","xxx", 
-				'x',Obsidian,'y',SpiderEgg);
-			//Zombie
-			GameRegistry.addRecipe(new ItemStack(ZombieSpawner), "xxx", "xyx","xxx", 
-				'x',Obsidian,'y',ZombieEgg);
-			//Zombie Pig man
-			GameRegistry.addRecipe( new ItemStack(PigZombieSpawner), "xxx", "xyx","xxx", 
-					'x',Obsidian,'y',ZombiePigManEgg);
-			//EnderMan
-			GameRegistry.addRecipe( new ItemStack(EndermanSpawner) , "xxx", "xyx","xxx", 
-					'x',Obsidian,'y',EnderMenEgg);
-			
-			//CaveSpider
-			GameRegistry.addRecipe(new ItemStack(BlazeSpawner) , "xxx", "xyx","xxx", 
-					'x',Obsidian,'y',BlazeEgg);
-			
-			//Blaze
-			GameRegistry.addRecipe(new ItemStack(WitchSpawner) , "xxx", "xyx","xxx", 
-					'x',Obsidian,'y',WitchEgg);
-			GameRegistry.addRecipe(new ItemStack(IronGolemSpawner) , "xxx", "xyx","xxx", 
-					'x',Obsidian,'y',IronGolemEgg);
-		
-			
-			//Stiars Iron
-			GameRegistry.addRecipe(new ItemStack(IronStair,4),"  x", " xx","xxx", 
-					'x',Iron);
-			
-			//Stiars Glass
-			GameRegistry.addRecipe(new ItemStack(GlassStair,4),"  x", " xx","xxx", 
-					'x',Glass);
-			
-			//Stiars Lapis
-			GameRegistry.addRecipe(new ItemStack(LapisStair,4),"  x", " xx","xxx", 
-					'x',Lapis);
-			
-			//Stiars Gold
-			GameRegistry.addRecipe(new ItemStack(GoldStair,4),"  x", " xx","xxx", 
-					'x',Gold);
-	
-			//Stiars Dirt
-			GameRegistry.addRecipe(new ItemStack(DirtStair,4),"  x", " xx","xxx", 
-					'x',new ItemStack(3,1,0));
-			
-			//Stiars Stone
-			GameRegistry.addRecipe(new ItemStack(StoneStair,4),"  x", " xx","xxx", 
-					'x',Stone);
-			
-			//Stiars Diamond
-			GameRegistry.addRecipe(new ItemStack(DiamondStair,4),"  x", " xx","xxx", 
-					'x',new ItemStack(Item.diamond));
-			
-			GameRegistry.addRecipe(new ItemStack(Spawner_Pick),"xyx", " z "," z ", 
-					'x',new ItemStack(Item.rottenFlesh),'y',Iron,'z',new ItemStack(Item.stick));
-	}
-  
-
-
-	@PostInit
-	public void postInit(FMLPostInitializationEvent event) {
-		 
-		
-	System.out.println("[AdditionalCrafting] Additional Crafting has finished loading!!");
-	}
-	public static void Update(){
-		  {
-			try {
-		        URL url = new URL("https://raw.github.com/chibill/AdditionalCrafting/master/Version_Control/1.5.txt");
-
-		        BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
-
-		        int str = in.read();
-		        int str1 = in.read();
-		        int str2 = in.read();
-		        str1 = in.read();
-		        int str3 = in.read();
-		        if (in != null) {
-		          No_Internet = false;
-		          if ((str == 49) && (str2 == 48) && (str3 == 48)) {
-		           Up_to_Date = true;
-		            System.out.println("[AdditionalCrafting] Additional Crafting up to date!");
-		          }
-		          else {
-		            System.out.println("[AdditionalCrafting] Additional Crafting is out of date for this verison of Minecraft!");
-		          }
-		        }
-		        in.close();
-		      } catch (MalformedURLException e) {
-		      } catch (IOException e) {
-		        No_Internet = true;
-		        System.out.println("[AdditionalCrafting] Additional Crafting has no internet conection!");
-		      }
-		  }
-	}
-}
-	
+/* Location:           C:\Users\bill\Desktop\Minecraft\My Moding\forge\mcp\src\minecraft\
+ * Qualified Name:     chibill.AdditionalCrafting.Base
+ * JD-Core Version:    0.6.2
+ */
