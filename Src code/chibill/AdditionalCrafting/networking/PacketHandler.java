@@ -78,12 +78,12 @@
 /* 85 */       ((EntityClientPlayerMP)playerEntity).sendChatToPlayer("§c[AdditionalCrafting] " + ((EntityClientPlayerMP)playerEntity).username + " AdditionalCrafting could not check if it was out of date because there was no internet connection found!");
 /*    */     }
 /* 87 */     else if (Base.Up_to_Date) {
-/* 88 */       System.out.println("[AdditionalCrafting] Additional Crafting up to date!");
+/* 88 */           	Base.ACLog.info(" Additional Crafting up to date!");
 /* 89 */       ((EntityClientPlayerMP)playerEntity).sendChatToPlayer("[AdditionalCrafting] " + ((EntityClientPlayerMP)playerEntity).username + " Your AdditionalCrafting is up to date for this version of Minecraft!");
 /*    */     }
 /*    */     else
 /*    */     {
-/* 93 */       System.out.println("§c[AdditionalCrafting] Additional Crafting is out of date for this verison of Minecraft!");
+/* 93 */           Base.ACLog.info("§c Additional Crafting is out of date for this verison of Minecraft!");
 /* 94 */       ((EntityClientPlayerMP)playerEntity).sendChatToPlayer("§c[AdditionalCrafting] " + ((EntityClientPlayerMP)playerEntity).username + " Your AdditionalCrafting is out of date for this version of Minecraft!");
 /*    */     }
 /*    */   }

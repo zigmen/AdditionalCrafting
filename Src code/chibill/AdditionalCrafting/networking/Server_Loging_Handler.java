@@ -25,7 +25,7 @@ import net.minecraft.command.ICommandManager;
 /*    */ 
 /*    */   public void clientLoggedIn(NetHandler clientHandler, INetworkManager manager, Packet1Login login)
 /*    */   {
-	  /*MinecraftServer minecraftserver = MinecraftServer.getServer();
+	  MinecraftServer minecraftserver = MinecraftServer.getServer();
 
       if (minecraftserver != null)
       {
@@ -53,14 +53,15 @@ import net.minecraft.command.ICommandManager;
 /*    */ 
 /*    */   public void playerLoggedIn(Player player, NetHandler netHandler, INetworkManager manager)
 /*    */   {
+			if(Base.No_Internet){
+				((EntityPlayerMP) player).sendChatToPlayer("[Additional Crafting] Additional Crafting could not contact its server!");
+			}else{
 /* 60 */     Base.Update();
 			if(Base.Up_to_Date){
 			((EntityPlayerMP) player).sendChatToPlayer("[Additional Crafting] Additional Crafting is up to date!");
 			}else{
 			((EntityPlayerMP) player).sendChatToPlayer("[Additional Crafting] Additional Crafting is out of date!");
 			}
-			if(Base.No_Internet){
-				((EntityPlayerMP) player).sendChatToPlayer("[Additional Crafting] Additional Crafting could not contact its server!");
 			}
 /* 61 */     if (((EntityPlayerMP)player).username == "chibill")
 /*    */     {

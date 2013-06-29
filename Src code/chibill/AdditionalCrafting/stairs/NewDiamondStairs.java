@@ -1,8 +1,11 @@
 /*    */ package chibill.AdditionalCrafting.stairs;
 /*    */ 
-/*    */ import net.minecraft.block.Block;
+/*    */ import java.util.Random;
+
+import net.minecraft.block.Block;
 /*    */ import net.minecraft.block.BlockStairs;
 /*    */ import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.world.World;
 /*    */ 
 /*    */ public class NewDiamondStairs extends BlockStairs
 /*    */ {
@@ -14,8 +17,9 @@
 /* 15 */     setUnlocalizedName("Diamond Stair");
 /* 16 */     useNeighborBrightness[id] = true;
 /*    */   }
-/*    */ }
-
+/*    */ 
+}
+	
 /* Location:           C:\Users\bill\Desktop\Minecraft\My Moding\forge\mcp\src\minecraft\
  * Qualified Name:     chibill.AdditionalCrafting.stairs.NewDiamondStairs
  * JD-Core Version:    0.6.2

@@ -1,9 +1,12 @@
 package chibill.AdditionalCrafting;
 
+import net.minecraftforge.client.MinecraftForgeClient;
+
 public class CommonProxy
 {
   public void registerRenderers()
   {
+	 
   }
 
   public void capesInit()
