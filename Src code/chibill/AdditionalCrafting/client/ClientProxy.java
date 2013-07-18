@@ -1,13 +1,8 @@
-/*    */ package chibill.AdditionalCrafting.client;
+/*    */ package chibill.additionalcrafting.client;
 /*    */ 
-/*    */ import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.client.IItemRenderer;
-import net.minecraftforge.client.MinecraftForgeClient;
-import chibill.AdditionalCrafting.Base;
-import chibill.AdditionalCrafting.CommonProxy;
-/*    */ import chibill.AdditionalCrafting.developercapesapi.DeveloperCapesAPI;
+/*    */ 
+import chibill.additionalcrafting.CommonProxy;
+/*    */
 /*    */ 
 /*    */ public class ClientProxy extends CommonProxy
 /*    */ {

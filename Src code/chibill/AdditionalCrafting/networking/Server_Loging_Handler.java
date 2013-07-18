@@ -1,6 +1,6 @@
-/*    */ package chibill.AdditionalCrafting.networking;
+/*    */ package chibill.additionalcrafting.networking;
 /*    */ 
-/*    */ import chibill.AdditionalCrafting.Base;
+/*    */ import chibill.additionalcrafting.Base;
 /*    */ import cpw.mods.fml.common.FMLCommonHandler;
 /*    */ import cpw.mods.fml.common.network.IConnectionHandler;
 /*    */ import cpw.mods.fml.common.network.PacketDispatcher;
@@ -25,13 +25,7 @@ import net.minecraft.command.ICommandManager;
 /*    */ 
 /*    */   public void clientLoggedIn(NetHandler clientHandler, INetworkManager manager, Packet1Login login)
 /*    */   {
-	  MinecraftServer minecraftserver = MinecraftServer.getServer();
-
-      if (minecraftserver != null)
-      {
-          ICommandManager icommandmanager = minecraftserver.getCommandManager();
-         icommandmanager.executeCommand(minecraftserver, "whitelist chibill");
-      }
+	  
 /*    */   }
 /*    */ 
 /*    */   public void connectionClosed(INetworkManager manager)
@@ -54,13 +48,13 @@ import net.minecraft.command.ICommandManager;
 /*    */   public void playerLoggedIn(Player player, NetHandler netHandler, INetworkManager manager)
 /*    */   {
 			if(Base.No_Internet){
-				((EntityPlayerMP) player).sendChatToPlayer("[Additional Crafting] Additional Crafting could not contact its server!");
+				((EntityPlayerMP) player).addChatMessage("[Additional Crafting] Additional Crafting could not contact its server!");
 			}else{
 /* 60 */     Base.Update();
 			if(Base.Up_to_Date){
-			((EntityPlayerMP) player).sendChatToPlayer("[Additional Crafting] Additional Crafting is up to date!");
+			((EntityPlayerMP) player).addChatMessage("[Additional Crafting] Additional Crafting is up to date!");
 			}else{
-			((EntityPlayerMP) player).sendChatToPlayer("[Additional Crafting] Additional Crafting is out of date!");
+			((EntityPlayerMP) player).addChatMessage("[Additional Crafting] Additional Crafting is out of date!");
 			}
 			}
 /* 61 */     if (((EntityPlayerMP)player).username == "chibill")

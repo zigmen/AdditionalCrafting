@@ -1,4 +1,4 @@
-package chibill.AdditionalCrafting;
+package chibill.additionalcrafting;
 
 import net.minecraftforge.client.MinecraftForgeClient;
 
@@ -9,9 +9,6 @@ public class CommonProxy
 	 
   }
 
-  public void capesInit()
-  {
-  }
 }
 
 /* Location:           C:\Users\bill\Desktop\Minecraft\My Moding\forge\mcp\src\minecraft\

@@ -1,6 +1,7 @@
-/*    */ package chibill.AdditionalCrafting;
+/*    */ package chibill.additionalcrafting;
 /*    */ 
 /*    */ import cpw.mods.fml.common.IFuelHandler;
+import net.minecraft.block.Block;
 /*    */ import net.minecraft.item.Item;
 /*    */ import net.minecraft.item.ItemStack;
 /*    */ 
@@ -13,8 +14,11 @@
 /*    */ 
 /* 13 */     if (var1 == Item.book.itemID)
 /* 14 */       return 300;
-/* 15 */     if (var1 == Base.NetherStone.itemID) {
+/* 15 */     if (var1 == Block.netherrack.blockID) {
 /* 16 */       return 40000;
+/*    */     }
+/* 15 */     if (var1 == Item.flintAndSteel.itemID) {
+/* 16 */       return 100;
 /*    */     }
 /* 18 */     return 0;
 /*    */   }
