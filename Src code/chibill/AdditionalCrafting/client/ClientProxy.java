@@ -3,7 +3,7 @@ import net.minecraftforge.common.MinecraftForge;
 /*    */ 
 /*    */ 
 import chibill.additionalcrafting.CommonProxy;
-import chibill.additionalcrafting.events.Cape_Event;
+
 /*    */
 /*    */ 
 /*    */ public class ClientProxy extends CommonProxy
@@ -11,8 +11,7 @@ import chibill.additionalcrafting.events.Cape_Event;
 			
 /*    */   public void registerRenderers()
 /*    */   {
-	         MinecraftForge.EVENT_BUS.register(new Cape_Event());
-
+	    
 /*    */  
 /*    */}  
 }
