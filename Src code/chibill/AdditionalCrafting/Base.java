@@ -4,10 +4,6 @@ package chibill.additionalcrafting;
 
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.Init;
-import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.Mod.PostInit;
-import cpw.mods.fml.common.Mod.PreInit;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -16,11 +12,12 @@ import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
+import cpw.mods.fml.relauncher.FMLInjectionData;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import java.io.BufferedReader;
-
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
@@ -30,13 +27,15 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.logging.Logger;
 
+import com.jadarstudios.developercapes.DevCapesUtil;
+
 import chibill.additionalcrafting.enchant.*;
 import chibill.additionalcrafting.events.*;
 import chibill.additionalcrafting.networking.*;
 import chibill.additionalcrafting.spawners.*;
 import chibill.additionalcrafting.stairs.NewStairs;
-
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.EnumToolMaterial;
@@ -58,27 +57,10 @@ public class Base
 	public static final ItemStack NetherStone = new ItemStack(87, 1, 0);
 	ItemStack Obsidian = new ItemStack(49, 1, 0);
 	public int MobSpawner_ID;
-	private int Spawner_Pick_ID;
-	private int IronStairs;
-	private int GlassStairs;
-	private int GoldStairs;
-	private int LapisStairs;
-	private int DiamondStairs;
-	private int DirtStairs;
-	private int StoneStairs;
+	private int GoldStairs,IronStairs,GlassStairs,LapisStairs,DiamondStairs,DirtStairs,StoneStairs;
 	public static int Enchant_ID;
-	public static boolean No_Internet;
-	public static boolean Up_to_Date;
-	public static Block Spawner;
-	public static Block DirtStair;
-	public static Block GlassStair;
-	public static Block LapisStair;
-	public static Block GoldStair;
-	public static Block DiamondStair;
-	public static Block StoneStair;
-	public static Block IronStair;
-	public static boolean Check;
-	public static Item Spawner_Pick;
+	public static boolean No_Internet,Up_to_Date,Check;
+	public static Block Spawner	,DirtStair,GlassStair, LapisStair,GoldStair,DiamondStair,StoneStair,IronStair;
 	public static Configuration config;
 
 	ItemStack CreeperEgg = new ItemStack(383, 1, 50);
@@ -106,7 +88,7 @@ public class Base
 	private static final String[] multiBlockNames = { "Creeper Spawner","Skeleton Spawner","Spider Spawner","Zombie Spawner","PigZombie Spawner","Enderman Spawner","Blaze Spawner","Witch Spawner","VillagerGolem Spawner"};
 	public static Logger ACLog = Logger.getLogger("Additional Crafting");
 	ItemStack[] StairMat = {new ItemStack(Block.dirt),new ItemStack(Item.diamond),new ItemStack(Block.stone),new ItemStack(Item.ingotIron),new ItemStack(Block.glass),new ItemStack(Item.dyePowder,1,4),new ItemStack(Item.ingotGold)};
-
+	
 	@Mod.Instance("additionalcrafting")
 	public static Base instance;
 
@@ -116,8 +98,10 @@ public class Base
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
+		
+				
 		ACLog.setParent(FMLLog.getLogger());
-		ACLog.info("Starting AditionalCrafting 1.1.0");
+		ACLog.info("Starting AditionalCrafting 1.4.1");
 		ACLog.info("Copyright (c) Chibill, 2013");
 
 
@@ -142,7 +126,7 @@ public class Base
 				"Stone Stairs", 3057).getInt();
 
 		this.MobSpawner_ID = config.get("block", 
-				"This and the next 9 Block Ids are for Spawners", 3058).getInt();
+				"Spawners", 3058).getInt();
 
 
 
@@ -166,7 +150,7 @@ public class Base
 
 
 		MinecraftForge.EVENT_BUS.register(new Enchant_Handler());
-		//MinecraftForge.EVENT_BUS.register(new Cape_Handler());
+		
 
 
 		DirtStair = new NewStairs(this.DirtStairs,Block.dirt);
@@ -371,7 +355,7 @@ public class Base
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event)
 	{ 		
-
+		DevCapesUtil.addFileUrl("https://raw.github.com/chibill/additionalcrafting/master/Capes_For_Devs/AC.txt");
 		ACLog.info("Additional Crafting has finished loading!!");
 	}
 	public static void Update()
@@ -383,7 +367,7 @@ public class Base
 			if (in != null) {
 				No_Internet = false;
 				System.out.println(str);
-				if (str.equals("140")) {
+				if (str.equals("141")) {
 					Up_to_Date = true;
 					ACLog.finest("Additional Crafting up to date!");
 				}

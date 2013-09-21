@@ -26,8 +26,8 @@ public class Enchant_Handler extends Event {
 	public void onPlayerInteract(PlayerInteractEvent event)
 	{
 		if(event.entityPlayer.getCurrentEquippedItem() != null && event.entityPlayer.getCurrentEquippedItem().canHarvestBlock(Block.stone))  {
-			if (EnchantmentHelper.getEnchantmentLevel(Base.Enchant_ID,event.entityPlayer.getCurrentEquippedItem()) > 0) {
-				Utl.spawnerDrop(event.entity.worldObj, event.x, event.y, event.z);
+			if (EnchantmentHelper.getEnchantmentLevel(Base.Enchant_ID,event.entityPlayer.getCurrentEquippedItem())>0) {
+				Utl.spawnerDrop(event.entity.worldObj, event.x, event.y, event.z,EnchantmentHelper.getEnchantmentLevel(Base.Enchant_ID,event.entityPlayer.getCurrentEquippedItem()));
 				event.entityPlayer.getCurrentEquippedItem().damageItem(10, event.entityPlayer);
 			}
 

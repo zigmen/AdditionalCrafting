@@ -9,7 +9,6 @@
 /*    */ import java.io.DataInputStream;
 /*    */ import java.io.IOException;
 /*    */ import java.io.PrintStream;
-/*    */ import net.minecraft.client.entity.EntityClientPlayerMP;
 /*    */ import net.minecraft.entity.player.EntityPlayerMP;
 /*    */ import net.minecraft.network.INetworkManager;
 /*    */ import net.minecraft.network.packet.Packet250CustomPayload;
@@ -51,7 +50,7 @@
 /*    */     }
 /*    */     
 /* 59 */     if (chibill)
-/* 60 */       ((EntityClientPlayerMP)playerEntity).sendChatMessage("Chibill the Creator of AdditionalCrafting has joined the game!");
+/* 60 */       ((EntityPlayerMP)playerEntity).addChatMessage("Chibill the Creator of AdditionalCrafting has joined the game!");
 /*    */   }
 /*    */ 
 /*    */   private void handleHimehowareu(Packet250CustomPayload packet, Player playerEntity)
@@ -69,22 +68,22 @@
 /*    */     }
 /*    */ 
 /* 77 */     if (Himehowareu)
-/* 78 */       ((EntityClientPlayerMP)playerEntity).sendChatMessage("Himehowareu the Creator of AdditionalCrafting's Textures has joined the game!");
+/* 78 */       ((EntityPlayerMP)playerEntity).addChatMessage("Himehowareu the Creator of AdditionalCrafting's Textures has joined the game!");
 /*    */   }
 /*    */ 
 /*    */   private void handleLoggin(Packet250CustomPayload packet, Player playerEntity)
 /*    */   {
 /* 84 */     if (Base.No_Internet) {
-/* 85 */       ((EntityClientPlayerMP)playerEntity).sendChatMessage("§c[AdditionalCrafting] " + ((EntityClientPlayerMP)playerEntity).username + " AdditionalCrafting could not check if it was out of date because there was no internet connection found!");
+/* 85 */       ((EntityPlayerMP)playerEntity).addChatMessage("§c[AdditionalCrafting] " + ((EntityPlayerMP)playerEntity).username + " AdditionalCrafting could not check if it was out of date because there was no internet connection found!");
 /*    */     }
 /* 87 */     else if (Base.Up_to_Date) {
 /* 88 */           	Base.ACLog.info(" Additional Crafting up to date!");
-/* 89 */       ((EntityClientPlayerMP)playerEntity).sendChatMessage("[AdditionalCrafting] " + ((EntityClientPlayerMP)playerEntity).username + " Your AdditionalCrafting is up to date for this version of Minecraft!");
+/* 89 */       ((EntityPlayerMP)playerEntity).addChatMessage("[AdditionalCrafting] " + ((EntityPlayerMP)playerEntity).username + " Your AdditionalCrafting is up to date for this version of Minecraft!");
 /*    */     }
 /*    */     else
 /*    */     {
 /* 93 */           Base.ACLog.info("§c Additional Crafting is out of date for this verison of Minecraft!");
-/* 94 */       ((EntityClientPlayerMP)playerEntity).sendChatMessage("§c[AdditionalCrafting] " + ((EntityClientPlayerMP)playerEntity).username + " Your AdditionalCrafting is out of date for this version of Minecraft!");
+/* 94 */       ((EntityPlayerMP)playerEntity).addChatMessage("§c[AdditionalCrafting] " + ((EntityPlayerMP)playerEntity).username + " Your AdditionalCrafting is out of date for this version of Minecraft!");
 /*    */     }
 /*    */   }
 /*    */ }

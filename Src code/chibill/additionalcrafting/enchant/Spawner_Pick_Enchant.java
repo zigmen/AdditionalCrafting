@@ -30,7 +30,7 @@ public class Spawner_Pick_Enchant extends Enchantment
 
     public int getMaxLevel()
     {
-      return 1;
+      return 4;
     }
 
     public boolean canApply(ItemStack is)

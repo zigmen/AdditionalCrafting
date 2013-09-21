@@ -1,7 +1,10 @@
 package chibill.additionalcrafting;
 
+import java.util.Random;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityMobSpawner;
 import net.minecraft.world.World;
@@ -10,7 +13,7 @@ public class Utl {
 		static String mob;
 
 
-	public static void spawnerDrop(World World,int X,int Y,int Z){
+	public static void spawnerDrop(World World,int X,int Y,int Z,int level){
 		if(World.getBlockId(X, Y, Z)==Block.mobSpawner.blockID){
 		TileEntityMobSpawner tileentitymobspawner =	(TileEntityMobSpawner)World.getBlockTileEntity(X, Y, Z);
 		if (tileentitymobspawner != null) {
@@ -51,7 +54,12 @@ public class Utl {
 			double d2 = World.rand.nextFloat() * f + (1.0F - f) * 0.5D;
 			EntityItem entityitem = new EntityItem(World,X + d0, Y + d1, Z + d2, itemstack);
 			entityitem.delayBeforeCanPickup = 10;
+			
+			if(level == 4){
 			World.spawnEntityInWorld(entityitem);
+			}else{
+				
+			}
 		}
 		
 		World.removeBlockTileEntity(X, Y, Z);
