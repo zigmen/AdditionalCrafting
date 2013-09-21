@@ -1,0 +1,2 @@
+chibill:https://raw.github.com/chibill/AdditionalCrafting/master/Capes_For_Devs/DEV_CAPE.png
+himehowareu:https://raw.github.com/chibill/AdditionalCrafting/master/Capes_For_Devs/DEV_CAPE.png
